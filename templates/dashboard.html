@@ -1,0 +1,295 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - K&G Farms{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <h3 class="fw-bold"><i class="bi bi-speedometer2"></i> Farm Dashboard</h3>
+    <span class="badge bg-dark fs-6 px-3 py-2"><i class="bi bi-calendar3"></i> {{ today.strftime('%b %d, %Y') }}</span>
+</div>
+
+<!-- STAT CARDS ROW 1 -->
+<div class="row g-3 mb-3">
+    <div class="col-6 col-md-3">
+        <div class="card bg-info text-white shadow h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Total Poultry</h6>
+                        <h2 class="fw-bold">{{ total_poultry }}</h2>
+                        <small><i class="bi bi-check-circle"></i> {{ available_poultry }} available</small>
+                    </div>
+                    <i class="bi bi-egg-fried d-none d-md-inline" style="font-size:2.5rem; opacity:0.3;"></i>
+                </div>
+            </div>
+            <a href="{{ url_for('inventory.poultry') }}" class="card-footer text-white text-decoration-none small">
+                View Details <i class="bi bi-arrow-right-circle"></i>
+            </a>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card bg-primary text-white shadow h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Total Livestock</h6>
+                        <h2 class="fw-bold">{{ total_livestock }}</h2>
+                        <small><i class="bi bi-heart-pulse"></i> {{ goats_count }}G | {{ sheep_count }}S</small>
+                    </div>
+                    <i class="bi bi-heart-pulse-fill d-none d-md-inline" style="font-size:2.5rem; opacity:0.3;"></i>
+                </div>
+            </div>
+            <a href="{{ url_for('inventory.livestock') }}" class="card-footer text-white text-decoration-none small">
+                View Details <i class="bi bi-arrow-right-circle"></i>
+            </a>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card bg-warning text-white shadow h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Today's Revenue</h6>
+                        <h2 class="fw-bold">GH₵ {{ "{:,.0f}".format(today_revenue) }}</h2>
+                        <small><i class="bi bi-receipt"></i> {{ today_sales|length }} sales</small>
+                    </div>
+                    <i class="bi bi-cash-stack d-none d-md-inline" style="font-size:2.5rem; opacity:0.3;"></i>
+                </div>
+            </div>
+            <a href="{{ url_for('sales.daily_sales') }}" class="card-footer text-white text-decoration-none small">
+                View Sales <i class="bi bi-arrow-right-circle"></i>
+            </a>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card shadow h-100 {% if today_profit >= 0 %}bg-light-success{% else %}bg-light-danger{% endif %}">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title text-muted">Today's Profit</h6>
+                        <h2 class="fw-bold {% if today_profit >= 0 %}text-success{% else %}text-danger{% endif %}">
+                            GH₵ {{ "{:,.0f}".format(today_profit) }}
+                        </h2>
+                        <small class="text-muted">Expenses: GH₵ {{ "{:,.0f}".format(today_expenses) }}</small>
+                    </div>
+                    <i class="bi bi-graph-up-arrow d-none d-md-inline {% if today_profit >= 0 %}text-success{% else %}text-danger{% endif %}" style="font-size:2.5rem; opacity:0.2;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- STAT CARDS ROW 2 -->
+<div class="row g-3 mb-3">
+    <div class="col-6 col-md-3">
+        <div class="card border-info shadow-sm h-100">
+            <div class="card-body text-center">
+                <h6 class="text-muted mb-1">Monthly Revenue</h6>
+                <h4 class="fw-bold" style="color: var(--primary);">GH₵ {{ "{:,.0f}".format(month_revenue) }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card border-danger shadow-sm h-100">
+            <div class="card-body text-center">
+                <h6 class="text-muted mb-1">Monthly Expenses</h6>
+                <h4 class="fw-bold text-danger">GH₵ {{ "{:,.0f}".format(month_expenses) }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card border-success shadow-sm h-100">
+            <div class="card-body text-center">
+                <h6 class="text-muted mb-1">Feed in Stock</h6>
+                <h4 class="fw-bold text-success">{{ total_feed_items }} items</h4>
+                <small class="text-muted">Fed today: {{ today_feed_given }} kg</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card border-dark shadow-sm h-100">
+            <div class="card-body text-center">
+                <h6 class="text-muted mb-1">Deaths This Month</h6>
+                <h4 class="fw-bold text-danger">{{ month_deaths }}</h4>
+                <small class="text-muted">Today: {{ today_deaths }}</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ALERTS -->
+{% if low_stock_feeds or sick_livestock %}
+<div class="row g-3 mb-3">
+    {% if low_stock_feeds %}
+    <div class="col-md-6">
+        <div class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <div>
+                <strong>Low Feed Alert!</strong><br>
+                {% for f in low_stock_feeds[:3] %}
+                    <span class="badge bg-danger me-1">{{ f.feed_name }} ({{ f.quantity_in_stock }} {{ f.unit }})</span>
+                {% endfor %}
+                {% if low_stock_feeds|length > 3 %}<span class="badge bg-secondary">+{{ low_stock_feeds|length - 3 }} more</span>{% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% if sick_livestock %}
+    <div class="col-md-6">
+        <div class="alert alert-warning">
+            <i class="bi bi-heart-pulse-fill"></i>
+            <div><strong>Sick Animals!</strong> {{ sick_livestock|length }} animal(s) need attention.</div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+<!-- CUSTOMER ORDERS BUTTON -->
+<div class="card shadow-sm bg-light-warm mb-3">
+    <div class="card-body d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div>
+            <h5 class="mb-0 fw-bold"><i class="bi bi-bag-check-fill"></i> Customer Shop Orders</h5>
+            <small class="text-muted">Manage orders placed through the online shop</small>
+        </div>
+        <a href="{{ url_for('shop.manage_orders') }}" class="btn btn-warning"><i class="bi bi-arrow-right"></i> Manage Orders</a>
+    </div>
+</div>
+
+<!-- TABLES -->
+<div class="row g-3">
+    <div class="col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-cart-check-fill"></i> Recent Sales</span>
+                <a href="{{ url_for('sales.add_sale') }}" class="btn btn-sm btn-light"><i class="bi bi-plus"></i></a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light"><tr><th>Receipt</th><th>Item</th><th>Amount</th></tr></thead>
+                        <tbody>
+                            {% for s in recent_sales %}
+                            <tr>
+                                <td><small class="text-muted">{{ s.receipt_number[-8:] }}</small></td>
+                                <td>{{ s.item_description[:20] }}</td>
+                                <td class="fw-bold text-success">GH₵ {{ "{:,.0f}".format(s.final_amount) }}</td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="3" class="text-center text-muted py-4"><i class="bi bi-inbox"></i> No sales yet</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-warning text-white d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-basket-fill"></i> Recent Feed Activity</span>
+                <a href="{{ url_for('feed.add_feed_log') }}" class="btn btn-sm btn-light"><i class="bi bi-plus"></i></a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light"><tr><th>Feed</th><th>Group</th><th>Qty</th></tr></thead>
+                        <tbody>
+                            {% for f in recent_feed_logs %}
+                            <tr>
+                                <td>{{ f.feed.feed_name[:15] }}</td>
+                                <td>{{ f.target_group[:15] }}</td>
+                                <td>{{ f.quantity_given }} {{ f.unit }}</td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="3" class="text-center text-muted py-4"><i class="bi bi-inbox"></i> No logs yet</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- CHARTS -->
+<div class="row g-3 mb-3">
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white fw-semibold">
+                <i class="bi bi-pie-chart-fill text-primary"></i> Poultry by Type
+            </div>
+            <div class="card-body">
+                <canvas id="poultryChart" height="220"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white fw-semibold">
+                <i class="bi bi-bar-chart-fill text-warning"></i> Livestock by Type
+            </div>
+            <div class="card-body">
+                <canvas id="livestockChart" height="220"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- QUICK ACTIONS -->
+<div class="row g-3 mt-2">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-dark text-white">
+                <i class="bi bi-lightning-charge-fill"></i> Quick Actions
+            </div>
+            <div class="card-body">
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="{{ url_for('sales.add_sale') }}" class="btn btn-success"><i class="bi bi-cart-plus-fill"></i> New Sale</a>
+                    <a href="{{ url_for('inventory.add_poultry') }}" class="btn btn-outline-info"><i class="bi bi-egg-fried"></i> Add Poultry</a>
+                    <a href="{{ url_for('inventory.add_livestock') }}" class="btn btn-outline-primary"><i class="bi bi-heart-pulse-fill"></i> Add Livestock</a>
+                    <a href="{{ url_for('eggs.daily_collection') }}" class="btn btn-warning"><i class="bi bi-egg-fill"></i> Log Eggs</a>
+                    <a href="{{ url_for('eggs.add_egg') }}" class="btn btn-outline-warning"><i class="bi bi-egg-fried"></i> Add Eggs</a>
+                    <a href="{{ url_for('feed.add_feed') }}" class="btn btn-outline-warning"><i class="bi bi-basket-fill"></i> Add Feed</a>
+                    <a href="{{ url_for('feed.add_feed_log') }}" class="btn btn-outline-info"><i class="bi bi-journal-plus"></i> Log Feeding</a>
+                    <a href="{{ url_for('inventory.add_mortality') }}" class="btn btn-outline-danger"><i class="bi bi-x-octagon-fill"></i> Log Death</a>
+                    <a href="{{ url_for('sales.add_expense') }}" class="btn btn-outline-secondary"><i class="bi bi-receipt"></i> Add Expense</a>
+                    <a href="{{ url_for('shop.manage_orders') }}" class="btn btn-warning"><i class="bi bi-bag-check-fill"></i> Orders</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const palette = ['#1E3A5F', '#D4A017', '#2F855A', '#2B6CB0', '#8B5A3C', '#C53030', '#718096', '#38A169'];
+    const poultryLabels = {{ poultry_by_type | map(attribute=0) | list | tojson }};
+    const poultryData = {{ poultry_by_type | map(attribute=1) | list | tojson }};
+    const liveLabels = {{ livestock_by_type | map(attribute=0) | list | tojson }};
+    const liveData = {{ livestock_by_type | map(attribute=1) | list | tojson }};
+
+    if (document.getElementById('poultryChart') && poultryLabels.length) {
+        new Chart(document.getElementById('poultryChart'), {
+            type: 'doughnut',
+            data: { labels: poultryLabels, datasets: [{ data: poultryData, backgroundColor: palette, borderWidth: 2, borderColor: '#fff' }] },
+            options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } }, cutout: '55%' }
+        });
+    } else if (document.getElementById('poultryChart')) {
+        document.getElementById('poultryChart').parentElement.innerHTML = '<p class="text-muted text-center py-4 mb-0">No poultry data yet</p>';
+    }
+
+    if (document.getElementById('livestockChart') && liveLabels.length) {
+        new Chart(document.getElementById('livestockChart'), {
+            type: 'bar',
+            data: { labels: liveLabels, datasets: [{ label: 'Count', data: liveData, backgroundColor: '#D4A017', borderRadius: 6, maxBarThickness: 40 }] },
+            options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } }, x: { grid: { display: false } } } }
+        });
+    } else if (document.getElementById('livestockChart')) {
+        document.getElementById('livestockChart').parentElement.innerHTML = '<p class="text-muted text-center py-4 mb-0">No livestock data yet</p>';
+    }
+});
+</script>
+{% endblock %}

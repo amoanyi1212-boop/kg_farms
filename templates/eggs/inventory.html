@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% block title %}Egg Inventory - K&G Farms{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <h3 class="fw-bold"><i class="bi bi-egg-fill"></i> Egg Inventory</h3>
+    <div class="d-flex gap-2">
+        <a href="{{ url_for('eggs.daily_collection') }}" class="btn btn-warning">
+            <i class="bi bi-basket-fill"></i> Daily Collection
+        </a>
+        <a href="{{ url_for('eggs.add_egg') }}" class="btn btn-info">
+            <i class="bi bi-plus-circle"></i> Add Eggs
+        </a>
+    </div>
+</div>
+
+<!-- Stats -->
+<div class="row g-2 mb-3">
+    <div class="col-6 col-md-3">
+        <div class="card bg-warning text-white text-center p-3">
+            <h6>Total Crates</h6>
+            <h3 class="fw-bold">{{ total_crates }}</h3>
+            <small>+ {{ total_loose }} loose eggs</small>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card bg-info text-white text-center p-3">
+            <h6>Total Eggs</h6>
+            <h3 class="fw-bold">{{ total_eggs }}</h3>
+            <small>All types</small>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card bg-success text-white text-center p-3">
+            <h6>Stock Value</h6>
+            <h4 class="fw-bold">GH₵ {{ "{:,.0f}".format(total_value) }}</h4>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card bg-danger text-white text-center p-3">
+            <h6>Alerts</h6>
+            <h3 class="fw-bold">{{ low_stock|length + expiring_soon|length }}</h3>
+            <small>{{ low_stock|length }} low | {{ expiring_soon|length }} expiring</small>
+        </div>
+    </div>
+</div>
+
+<!-- Alerts -->
+{% if low_stock %}
+<div class="alert alert-danger">
+    <i class="bi bi-exclamation-triangle-fill"></i>
+    <div>
+        <strong>Low Stock:</strong>
+        {% for e in low_stock %}<span class="badge bg-danger me-1">{{ e.egg_type }} ({{ e.crates_in_stock }} crates)</span>{% endfor %}
+    </div>
+</div>
+{% endif %}
+{% if expiring_soon %}
+<div class="alert alert-warning">
+    <i class="bi bi-clock-fill"></i>
+    <div>
+        <strong>Expiring Soon:</strong>
+        {% for e in expiring_soon %}<span class="badge bg-warning me-1">{{ e.egg_type }} - {{ e.expiry_date }}</span>{% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Filters -->
+<form class="row g-2 mb-3" method="GET">
+    <div class="col-md-3">
+        <select name="type" class="form-select">
+            <option value="">All Types</option>
+            {% for t in egg_types %}<option {% if filter_type==t %}selected{% endif %}>{{ t }}</option>{% endfor %}
+        </select>
+    </div>
+    <div class="col-md-3">
+        <select name="status" class="form-select">
+            <option value="">All Status</option>
+            {% for s in egg_statuses %}<option {% if filter_status==s %}selected{% endif %}>{{ s }}</option>{% endfor %}
+        </select>
+    </div>
+    <div class="col-md-2"><button class="btn btn-info w-100">Filter</button></div>
+</form>
+
+<!-- Egg cards -->
+<div class="row g-3">
+    {% for e in eggs %}
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow-sm h-100 {% if e.is_low_stock %}border-danger{% elif e.is_expired %}border-warning{% endif %}">
+            <div class="card-header d-flex justify-content-between align-items-center
+                {% if e.status == 'Available' %}bg-success
+                {% elif e.status == 'Sold' %}bg-info
+                {% elif e.status == 'Broken' or e.status == 'Expired' %}bg-danger
+                {% else %}bg-secondary{% endif %} text-white">
+                <div>
+                    <i class="bi bi-egg-fill"></i> <strong>{{ e.egg_type }}</strong>
+                </div>
+                <span class="badge bg-light text-dark">{{ e.status }}</span>
+            </div>
+            <div class="card-body">
+                <div class="row g-2 mb-2">
+                    <div class="col-6">
+                        <small class="text-muted">Crates</small>
+                        <div class="fw-bold fs-4 text-warning">{{ e.crates_in_stock }}</div>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted">Loose Eggs</small>
+                        <div class="fw-bold fs-4 text-info">{{ e.loose_eggs }}</div>
+                    </div>
+                    <div class="col-12">
+                        <small class="text-muted">Total Eggs: <strong>{{ e.total_eggs }}</strong></small>
+                    </div>
+                </div>
+
+                <hr class="my-2">
+
+                <div class="row g-1 small">
+                    {% if e.egg_size %}<div class="col-6"><i class="bi bi-rulers"></i> {{ e.egg_size }}</div>{% endif %}
+                    {% if e.egg_color %}<div class="col-6"><i class="bi bi-palette-fill"></i> {{ e.egg_color }}</div>{% endif %}
+                    {% if e.grade %}<div class="col-12"><i class="bi bi-award-fill"></i> {{ e.grade }}</div>{% endif %}
+                    {% if e.source_batch %}<div class="col-12"><i class="bi bi-tag-fill"></i> From: {{ e.source_batch }}</div>{% endif %}
+                    {% if e.storage_location %}<div class="col-12"><i class="bi bi-geo-alt-fill"></i> {{ e.storage_location }}</div>{% endif %}
+                </div>
+
+                <hr class="my-2">
+
+                <div class="row g-1">
+                    <div class="col-6"><small class="text-muted">Per Crate</small><div class="fw-bold text-success">GH₵ {{ "{:,.0f}".format(e.price_per_crate or 0) }}</div></div>
+                    <div class="col-6"><small class="text-muted">Per Egg</small><div class="fw-bold text-success">GH₵ {{ "{:,.2f}".format(e.price_per_egg or 0) }}</div></div>
+                    <div class="col-12"><small class="text-muted">Stock Value: <strong class="text-success">GH₵ {{ "{:,.0f}".format(e.total_value) }}</strong></small></div>
+                </div>
+
+                <hr class="my-2">
+
+                <div class="small">
+                    <div><i class="bi bi-calendar-check"></i> Collected: {{ e.collection_date }}</div>
+                    {% if e.expiry_date %}
+                    <div class="{% if e.is_expired %}text-danger fw-bold{% endif %}">
+                        <i class="bi bi-calendar-x"></i> Expires: {{ e.expiry_date }}
+                        {% if e.is_expired %}<span class="badge bg-danger">EXPIRED</span>{% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="d-flex gap-2 mt-3">
+                    <a href="{{ url_for('eggs.edit_egg', id=e.id) }}" class="btn btn-sm btn-outline-primary flex-grow-1">
+                        <i class="bi bi-pencil"></i> Edit
+                    </a>
+                    {% if current_user.is_admin() %}
+                    <form method="POST" action="{{ url_for('eggs.delete_egg', id=e.id) }}" onsubmit="return confirm('Delete?')">
+                        <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12">
+        <div class="card text-center p-5">
+            <i class="bi bi-egg" style="font-size:4rem; color:var(--text-muted);"></i>
+            <h5 class="mt-3">No egg records yet</h5>
+            <p class="text-muted">Start by adding your first egg collection.</p>
+            <div>
+                <a href="{{ url_for('eggs.add_egg') }}" class="btn btn-info"><i class="bi bi-plus"></i> Add Eggs</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

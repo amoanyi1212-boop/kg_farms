@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Edit Eggs - K&G Farms{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0"><i class="bi bi-pencil-square"></i> Edit Egg Record</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Egg Type</label>
+                            <select name="egg_type" class="form-select">
+                                {% for t in egg_types %}<option {% if egg.egg_type==t %}selected{% endif %}>{{ t }}</option>{% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Size</label>
+                            <select name="egg_size" class="form-select">
+                                <option value="">-</option>
+                                {% for s in sizes %}<option {% if egg.egg_size==s %}selected{% endif %}>{{ s }}</option>{% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Color</label>
+                            <select name="egg_color" class="form-select">
+                                {% for c in colors %}<option {% if egg.egg_color==c %}selected{% endif %}>{{ c }}</option>{% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Grade</label>
+                            <select name="grade" class="form-select">
+                                {% for g in grades %}<option {% if egg.grade==g %}selected{% endif %}>{{ g }}</option>{% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Source Batch</label>
+                            <input type="text" name="source_batch" class="form-control" value="{{ egg.source_batch or '' }}">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Crates</label>
+                            <input type="number" name="crates_in_stock" class="form-control" value="{{ egg.crates_in_stock }}" min="0">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Loose Eggs</label>
+                            <input type="number" name="loose_eggs" class="form-control" value="{{ egg.loose_eggs }}" min="0">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Reorder Level</label>
+                            <input type="number" name="reorder_level" class="form-control" value="{{ egg.reorder_level }}" min="0">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Price per Crate</label>
+                            <input type="number" name="price_per_crate" class="form-control" value="{{ egg.price_per_crate or 0 }}" step="0.01">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Price per Egg</label>
+                            <input type="number" name="price_per_egg" class="form-control" value="{{ egg.price_per_egg or 0 }}" step="0.01">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Status</label>
+                            <select name="status" class="form-select">
+                                {% for s in statuses %}<option {% if egg.status==s %}selected{% endif %}>{{ s }}</option>{% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Expiry Date</label>
+                            <input type="date" name="expiry_date" class="form-control" value="{{ egg.expiry_date }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Storage Location</label>
+                            <input type="text" name="storage_location" class="form-control" value="{{ egg.storage_location or '' }}">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Notes</label>
+                            <textarea name="notes" class="form-control" rows="2">{{ egg.notes or '' }}</textarea>
+                        </div>
+                    </div>
+                    <div class="mt-3 d-flex gap-2 flex-wrap">
+                        <button type="submit" class="btn btn-info btn-lg"><i class="bi bi-check-circle"></i> Update</button>
+                        <a href="{{ url_for('eggs.inventory') }}" class="btn btn-outline-secondary btn-lg">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

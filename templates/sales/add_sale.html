@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}New Sale - K&G Farms{% endblock %}
+{% block content %}
+<div class="row justify-content-center"><div class="col-lg-7">
+<div class="card shadow"><div class="card-header bg-success text-white"><h4 class="mb-0"><i class="bi bi-cart-plus"></i> Record New Sale</h4></div>
+<div class="card-body"><form method="POST"><div class="row g-3">
+    <div class="col-md-4"><label class="form-label">Sale Type *</label><select name="sale_type" class="form-select" required><option>Poultry</option><option>Livestock</option><option>Eggs</option><option>Other</option></select></div>
+    <div class="col-md-8"><label class="form-label">Item Description *</label><input type="text" name="item_description" class="form-control" required placeholder="e.g., 50 Broilers, 2 Rams"></div>
+    <div class="col-md-3"><label class="form-label">Quantity *</label><input type="number" name="quantity" class="form-control" required min="1" id="qty" oninput="calcTotal()"></div>
+    <div class="col-md-3"><label class="form-label">Unit Price *</label><input type="number" name="unit_price" class="form-control" required step="0.01" id="price" oninput="calcTotal()"></div>
+    <div class="col-md-3"><label class="form-label">Discount</label><input type="number" name="discount" class="form-control" step="0.01" value="0" id="disc" oninput="calcTotal()"></div>
+    <div class="col-md-3"><label class="form-label">Total</label><input type="text" id="totalDisplay" class="form-control fw-bold text-success" readonly></div>
+    <div class="col-md-4"><label class="form-label">Customer Name</label><input type="text" name="customer_name" class="form-control"></div>
+    <div class="col-md-4"><label class="form-label">Customer Phone</label><input type="text" name="customer_phone" class="form-control"></div>
+    <div class="col-md-4"><label class="form-label">Date</label><input type="date" name="sale_date" class="form-control"></div>
+    <div class="col-md-6"><label class="form-label">Payment Method</label><select name="payment_method" class="form-select"><option>Cash</option><option>Transfer</option><option>POS</option><option>Credit</option></select></div>
+    <div class="col-md-6"><label class="form-label">Payment Status</label><select name="payment_status" class="form-select"><option>Paid</option><option>Pending</option><option>Partial</option></select></div>
+    <div class="col-12"><label class="form-label">Notes</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+</div><button type="submit" class="btn btn-success btn-lg w-100 mt-3"><i class="bi bi-check-circle"></i> Complete Sale</button></form></div></div>
+</div></div>
+{% endblock %}
+{% block scripts %}
+<script>function calcTotal(){var q=parseFloat(document.getElementById('qty').value)||0;var p=parseFloat(document.getElementById('price').value)||0;var d=parseFloat(document.getElementById('disc').value)||0;document.getElementById('totalDisplay').value='GH₵ '+((q*p)-d).toLocaleString();}</script>
+{% endblock %}

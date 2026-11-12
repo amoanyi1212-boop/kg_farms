@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Feed Schedule - K&G Farms{% endblock %}
+{% block content %}
+<h3 class="fw-bold text-primary mb-3"><i class="bi bi-calendar-week"></i> Feed Schedule</h3>
+<div class="row g-3">
+    <div class="col-md-4"><div class="card shadow-sm border-warning"><div class="card-header bg-warning text-dark fw-bold"><i class="bi bi-sunrise"></i> Morning (6:00 - 8:00 AM)</div>
+    <div class="card-body"><ul class="list-unstyled mb-0">{% for f in feeds %}{% if 'Starter' in f.feed_name or 'Layer' in f.feed_name %}<li><i class="bi bi-check-circle text-success"></i> {{ f.feed_name }} <small class="text-muted">({{ f.quantity_in_stock }} {{ f.unit }})</small></li>{% endif %}{% endfor %}</ul></div></div></div>
+    <div class="col-md-4"><div class="card shadow-sm border-info"><div class="card-header bg-info text-white fw-bold"><i class="bi bi-sun"></i> Afternoon (12:00 - 2:00 PM)</div>
+    <div class="card-body"><ul class="list-unstyled mb-0">{% for f in feeds %}{% if 'Grower' in f.feed_name or 'Goat' in f.feed_name or 'Sheep' in f.feed_name %}<li><i class="bi bi-check-circle text-success"></i> {{ f.feed_name }} <small class="text-muted">({{ f.quantity_in_stock }} {{ f.unit }})</small></li>{% endif %}{% endfor %}</ul></div></div></div>
+    <div class="col-md-4"><div class="card shadow-sm border-dark"><div class="card-header bg-dark text-white fw-bold"><i class="bi bi-moon"></i> Evening (5:00 - 7:00 PM)</div>
+    <div class="card-body"><ul class="list-unstyled mb-0">{% for f in feeds %}{% if 'Finisher' in f.feed_name or 'Supplement' in f.feed_name %}<li><i class="bi bi-check-circle text-success"></i> {{ f.feed_name }} <small class="text-muted">({{ f.quantity_in_stock }} {{ f.unit }})</small></li>{% endif %}{% endfor %}</ul></div></div></div>
+</div>
+<div class="alert alert-info mt-3"><i class="bi bi-info-circle"></i> This is a suggested schedule. Adjust based on your farm's routine. Log actual feeding in the <a href="{{ url_for('feed.feed_log') }}">Feed Log</a>.</div>
+{% endblock %}

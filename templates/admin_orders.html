@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}Customer Orders - K&G Farms{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <h3 class="fw-bold"><i class="bi bi-bag-check-fill"></i> Customer Orders</h3>
+    <a href="{{ url_for('shop.home') }}" target="_blank" class="btn btn-outline-info"><i class="bi bi-shop-window"></i> View Shop</a>
+</div>
+
+<div class="row g-2 mb-3">
+    <div class="col-6 col-md-3">
+        <div class="card bg-warning text-white text-center p-3">
+            <h6>Pending</h6><h3 class="fw-bold">{{ pending_count }}</h3>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card bg-info text-white text-center p-3">
+            <h6>Confirmed</h6><h3 class="fw-bold">{{ confirmed_count }}</h3>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card bg-success text-white text-center p-3">
+            <h6>Completed</h6><h3 class="fw-bold">{{ completed_count }}</h3>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card bg-dark text-white text-center p-3">
+            <h6>Total</h6><h3 class="fw-bold">{{ orders|length }}</h3>
+        </div>
+    </div>
+</div>
+
+<form class="row g-2 mb-3" method="GET">
+    <div class="col-md-3">
+        <select name="status" class="form-select">
+            <option value="">All Status</option>
+            <option {% if filter_status=='Pending' %}selected{% endif %}>Pending</option>
+            <option {% if filter_status=='Confirmed' %}selected{% endif %}>Confirmed</option>
+            <option {% if filter_status=='Processing' %}selected{% endif %}>Processing</option>
+            <option {% if filter_status=='Completed' %}selected{% endif %}>Completed</option>
+            <option {% if filter_status=='Cancelled' %}selected{% endif %}>Cancelled</option>
+        </select>
+    </div>
+    <div class="col-md-2"><button class="btn btn-info w-100">Filter</button></div>
+</form>
+
+<div class="row g-3">
+    {% for o in orders %}
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header d-flex justify-content-between align-items-center
+                {% if o.status == 'Pending' %}bg-warning
+                {% elif o.status == 'Confirmed' %}bg-info
+                {% elif o.status == 'Completed' %}bg-success
+                {% elif o.status == 'Cancelled' %}bg-danger
+                {% else %}bg-dark{% endif %} text-white">
+                <div><strong>{{ o.order_number }}</strong></div>
+                <span class="badge bg-light text-dark">{{ o.status }}</span>
+            </div>
+            <div class="card-body">
+                <div class="row g-2 mb-2">
+                    <div class="col-6"><small class="text-muted">Customer</small><div class="fw-bold">{{ o.customer_name }}</div></div>
+                    <div class="col-6"><small class="text-muted">Phone</small><div class="fw-bold">{{ o.customer_phone }}</div></div>
+                    <div class="col-6"><small class="text-muted">Location</small><div>{{ o.customer_location or '-' }}</div></div>
+                    <div class="col-6"><small class="text-muted">Email</small><div class="small">{{ o.customer_email or '-' }}</div></div>
+                    <div class="col-12"><small class="text-muted">Item</small><div class="fw-bold">{{ o.item_description }}</div><small class="badge bg-secondary">{{ o.item_type }} × {{ o.quantity }}</small></div>
+                    {% if o.preferred_date %}<div class="col-6"><small class="text-muted">Preferred Date</small><div>{{ o.preferred_date }}</div></div>{% endif %}
+                    <div class="col-6"><small class="text-muted">Ordered</small><div class="small">{{ o.created_at.strftime('%b %d, %Y') }}</div></div>
+                    {% if o.notes %}<div class="col-12"><small class="text-muted">Customer Notes</small><div class="small fst-italic">{{ o.notes }}</div></div>{% endif %}
+                </div>
+
+                <form method="POST" action="{{ url_for('shop.update_order', id=o.id) }}" class="mt-2 pt-2 border-top">
+                    <div class="row g-2">
+                        <div class="col-md-6">
+                            <select name="status" class="form-select form-select-sm">
+                                <option {% if o.status=='Pending' %}selected{% endif %}>Pending</option>
+                                <option {% if o.status=='Confirmed' %}selected{% endif %}>Confirmed</option>
+                                <option {% if o.status=='Processing' %}selected{% endif %}>Processing</option>
+                                <option {% if o.status=='Completed' %}selected{% endif %}>Completed</option>
+                                <option {% if o.status=='Cancelled' %}selected{% endif %}>Cancelled</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <textarea name="admin_notes" class="form-control form-control-sm" rows="2" placeholder="Add note for customer...">{{ o.admin_notes or '' }}</textarea>
+                        </div>
+                        <div class="col-12 d-flex gap-2">
+                            <button class="btn btn-sm btn-info flex-grow-1"><i class="bi bi-check"></i> Update</button>
+                            {% if current_user.is_admin() %}
+                            <button type="submit" formaction="{{ url_for('shop.delete_order', id=o.id) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this order?')">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12">
+        <div class="card text-center p-5">
+            <i class="bi bi-inbox" style="font-size:4rem; color:var(--text-muted);"></i>
+            <h5 class="mt-3">No orders yet</h5>
+            <p class="text-muted">Orders placed through the shop will appear here.</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

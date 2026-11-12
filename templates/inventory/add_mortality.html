@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Log Mortality - K&G Farms{% endblock %}
+{% block content %}
+<div class="row justify-content-center"><div class="col-md-6">
+<div class="card shadow border-danger"><div class="card-header bg-danger text-white"><h4 class="mb-0"><i class="bi bi-x-octagon"></i> Log Death</h4></div>
+<div class="card-body"><form method="POST"><div class="row g-3">
+    <div class="col-md-6"><label class="form-label">Category *</label><select name="animal_category" class="form-select" required><option>Poultry</option><option>Livestock</option></select></div>
+    <div class="col-md-6"><label class="form-label">Animal Type *</label><input type="text" name="animal_type" class="form-control" required placeholder="e.g., Broiler, Goat"></div>
+    <div class="col-md-6"><label class="form-label">Batch/Tag</label><input type="text" name="batch_or_tag" class="form-control"></div>
+    <div class="col-md-6"><label class="form-label">Qty Dead *</label><input type="number" name="quantity_dead" class="form-control" required min="1" value="1"></div>
+    <div class="col-md-6"><label class="form-label">Suspected Cause</label><input type="text" name="suspected_cause" class="form-control"></div>
+    <div class="col-md-6"><label class="form-label">Date</label><input type="date" name="date_of_death" class="form-control"></div>
+    <div class="col-12"><label class="form-label">Notes</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+</div><button type="submit" class="btn btn-danger w-100 mt-3"><i class="bi bi-check-circle"></i> Save</button></form></div></div>
+</div></div>
+{% endblock %}

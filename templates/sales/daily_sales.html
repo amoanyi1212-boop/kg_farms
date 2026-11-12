@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Today's Sales - K&G Farms{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="fw-bold text-success"><i class="bi bi-calendar-day"></i> Today's Sales ({{ today }})</h3>
+    <a href="{{ url_for('sales.add_sale') }}" class="btn btn-success"><i class="bi bi-cart-plus"></i> New Sale</a>
+</div>
+<div class="row g-2 mb-3">
+    <div class="col-md-4"><div class="card bg-success text-white text-center p-2"><h4>GH₵ {{ "{:,.0f}".format(total_today) }}</h4><small>Today's Revenue</small></div></div>
+    <div class="col-md-4"><div class="card bg-info text-white text-center p-2"><h4>{{ sales|length }}</h4><small>Transactions</small></div></div>
+    <div class="col-md-4"><div class="card bg-warning text-dark text-center p-2"><h4>{{ total_items }}</h4><small>Items Sold</small></div></div>
+</div>
+<div class="card shadow-sm"><div class="table-responsive"><table class="table table-hover mb-0">
+<thead class="table-success"><tr><th>Receipt</th><th>Type</th><th>Item</th><th>Qty</th><th>Price</th><th>Discount</th><th>Total</th><th>Customer</th><th>Payment</th><th>Actions</th></tr></thead>
+<tbody>{% for s in sales %}<tr>
+    <td><small class="fw-bold">{{ s.receipt_number }}</small></td><td><span class="badge bg-secondary">{{ s.sale_type }}</span></td>
+    <td>{{ s.item_description }}</td><td>{{ s.quantity }}</td><td>GH₵ {{ "{:,.0f}".format(s.unit_price) }}</td>
+    <td>{{ s.discount }}</td><td class="fw-bold text-success">GH₵ {{ "{:,.0f}".format(s.final_amount) }}</td>
+    <td>{{ s.customer_name or 'Walk-in' }}</td>
+    <td><span class="badge bg-{{ 'success' if s.payment_status=='Paid' else 'warning' }}">{{ s.payment_method }} - {{ s.payment_status }}</span></td>
+    <td>{% if current_user.is_admin() %}<form method="POST" action="{{ url_for('sales.delete_sale', id=s.id) }}" class="d-inline" onsubmit="return confirm('Delete?')"><button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></form>{% endif %}</td>
+</tr>{% else %}<tr><td colspan="10" class="text-center text-muted py-4">No sales today</td></tr>{% endfor %}</tbody>
+</table></div></div>
+{% endblock %}

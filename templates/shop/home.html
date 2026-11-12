@@ -1,0 +1,158 @@
+{% extends "shop/base_shop.html" %}
+{% block title %}Welcome to K&G Farms{% endblock %}
+{% block content %}
+
+<div class="shop-hero">
+    <h1><i class="bi bi-buildings-fill"></i> Welcome to K&G Farms</h1>
+    <p>Ghana's Premium Poultry, Livestock & Fresh Eggs Supplier</p>
+    <div class="d-flex flex-wrap gap-2 justify-content-center">
+        <a href="{{ url_for('shop.shop_poultry') }}" class="btn btn-warning btn-lg">
+            <i class="bi bi-egg-fried"></i> Poultry
+        </a>
+        <a href="{{ url_for('shop.shop_livestock') }}" class="btn btn-light btn-lg">
+            <i class="bi bi-heart-pulse-fill"></i> Livestock
+        </a>
+        <a href="{{ url_for('shop.shop_eggs') }}" class="btn btn-lg" style="background:linear-gradient(135deg,#D4A017,#F2C94C); color:#fff; border:none;">
+            <i class="bi bi-egg-fill"></i> Fresh Eggs
+        </a>
+    </div>
+</div>
+
+<!-- Feature cards -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="card text-center p-3 h-100 bg-light-warm">
+            <i class="bi bi-award-fill" style="font-size:2.5rem; color:var(--gold-dark);"></i>
+            <h6 class="mt-2 mb-1 fw-bold">Premium Quality</h6>
+            <small class="text-muted">Healthy, well-fed animals</small>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card text-center p-3 h-100 bg-light-warm">
+            <i class="bi bi-egg-fill" style="font-size:2.5rem; color:var(--gold-dark);"></i>
+            <h6 class="mt-2 mb-1 fw-bold">Fresh Eggs Daily</h6>
+            <small class="text-muted">Collected every morning</small>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card text-center p-3 h-100 bg-light-warm">
+            <i class="bi bi-truck" style="font-size:2.5rem; color:var(--primary);"></i>
+            <h6 class="mt-2 mb-1 fw-bold">Fast Delivery</h6>
+            <small class="text-muted">Nationwide delivery</small>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card text-center p-3 h-100 bg-light-warm">
+            <i class="bi bi-cash-coin" style="font-size:2.5rem; color:var(--gold-dark);"></i>
+            <h6 class="mt-2 mb-1 fw-bold">Fair Prices</h6>
+            <small class="text-muted">Best market rates</small>
+        </div>
+    </div>
+</div>
+
+<!-- Featured Eggs -->
+{% if eggs %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="fw-bold mb-0"><i class="bi bi-egg-fill"></i> Fresh Eggs</h4>
+    <a href="{{ url_for('shop.shop_eggs') }}" class="btn btn-outline-warning btn-sm">View All <i class="bi bi-arrow-right"></i></a>
+</div>
+<div class="row g-3 mb-4">
+    {% for e in eggs[:4] %}
+    <div class="col-6 col-md-3">
+        <div class="product-card">
+            <div class="product-image" style="background: linear-gradient(135deg, #FFF8E1, #FFE0B2);">🥚</div>
+            <div class="product-body">
+                <div class="product-title">{{ e.egg_type }}</div>
+                <small class="text-muted d-block">{{ e.egg_size or 'Medium' }} · {{ e.egg_color or 'Brown' }}</small>
+                <div class="product-price">GH₵ {{ "{:,.0f}".format(e.price_per_crate or 0) }}<small class="text-muted fw-normal" style="font-size:0.7rem;">/crate</small></div>
+                <div class="product-meta">
+                    <span><i class="bi bi-box-fill"></i> {{ e.crates_in_stock }} crates</span>
+                    <span><i class="bi bi-hash"></i> {{ e.total_eggs }} eggs</span>
+                </div>
+                <a href="{{ url_for('shop.place_order') }}" class="btn btn-warning btn-sm w-100">
+                    <i class="bi bi-cart-plus"></i> Order Now
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- Featured Poultry -->
+{% if poultry %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="fw-bold mb-0"><i class="bi bi-egg-fried"></i> Available Poultry</h4>
+    <a href="{{ url_for('shop.shop_poultry') }}" class="btn btn-outline-info btn-sm">View All <i class="bi bi-arrow-right"></i></a>
+</div>
+<div class="row g-3 mb-4">
+    {% for b in poultry[:4] %}
+    <div class="col-6 col-md-3">
+        <div class="product-card">
+            <div class="product-image">🐔</div>
+            <div class="product-body">
+                <div class="product-title">{{ b.bird_type }}</div>
+                <small class="text-muted d-block">{{ b.breed or 'Standard' }}</small>
+                <div class="product-price">GH₵ {{ "{:,.0f}".format(b.unit_price or 0) }}</div>
+                <div class="product-meta">
+                    <span><i class="bi bi-hash"></i> {{ b.quantity }}</span>
+                    {% if b.age_weeks %}<span><i class="bi bi-clock"></i> {{ b.age_weeks }}w</span>{% endif %}
+                </div>
+                <a href="{{ url_for('shop.place_order') }}" class="btn btn-info btn-sm w-100">
+                    <i class="bi bi-cart-plus"></i> Order Now
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- Featured Livestock -->
+{% if livestock %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="fw-bold mb-0"><i class="bi bi-heart-pulse-fill"></i> Available Livestock</h4>
+    <a href="{{ url_for('shop.shop_livestock') }}" class="btn btn-outline-info btn-sm">View All <i class="bi bi-arrow-right"></i></a>
+</div>
+<div class="row g-3 mb-4">
+    {% for a in livestock[:4] %}
+    <div class="col-6 col-md-3">
+        <div class="product-card">
+            <div class="product-image">
+                {% if 'goat' in a.animal_type.lower() %}🐐{% else %}🐑{% endif %}
+            </div>
+            <div class="product-body">
+                <div class="product-title">{{ a.animal_type }}</div>
+                <small class="text-muted d-block">{{ a.breed or 'Local breed' }}</small>
+                <div class="product-price">GH₵ {{ "{:,.0f}".format(a.unit_price or 0) }}</div>
+                <div class="product-meta">
+                    {% if a.gender %}<span><i class="bi bi-gender-ambiguous"></i> {{ a.gender }}</span>{% endif %}
+                    {% if a.weight_kg %}<span><i class="bi bi-speedometer"></i> {{ a.weight_kg }}kg</span>{% endif %}
+                </div>
+                <a href="{{ url_for('shop.place_order') }}" class="btn btn-info btn-sm w-100">
+                    <i class="bi bi-cart-plus"></i> Order Now
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- CTA Section -->
+<div class="card shadow-sm bg-light-warm text-center p-4 my-4">
+    <h4 class="fw-bold">Ready to place an order?</h4>
+    <p class="text-muted">Contact us or fill out our simple order form. We'll get back to you within 24 hours!</p>
+    <div class="d-flex flex-wrap gap-2 justify-content-center">
+        <a href="{{ url_for('shop.place_order') }}" class="btn btn-warning">
+            <i class="bi bi-cart-plus-fill"></i> Place Order
+        </a>
+        <a href="https://wa.me/233548125064?text=Hi%20K%26G%20Farms%2C%20I%20want%20to%20place%20an%20order" target="_blank" class="btn btn-outline-success" style="border-color:#25D366; color:#25D366;">
+            <i class="bi bi-whatsapp"></i> WhatsApp Us
+        </a>
+        <a href="{{ url_for('shop.contact') }}" class="btn btn-outline-info">
+            <i class="bi bi-telephone-fill"></i> Contact Us
+        </a>
+    </div>
+</div>
+{% endblock %}

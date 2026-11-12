@@ -1,0 +1,52 @@
+{% extends "shop/base_shop.html" %}
+{% block title %}Order Placed - K&G Farms{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="card shadow text-center p-4">
+            <div class="mb-3">
+                <i class="bi bi-check-circle-fill" style="font-size:5rem; color:var(--success);"></i>
+            </div>
+            <h3 class="fw-bold text-success">Order Placed Successfully!</h3>
+            <p class="text-muted">Thank you, <strong>{{ order.customer_name }}</strong>. We've received your order.</p>
+
+            <div class="alert alert-info d-inline-block mx-auto text-start">
+                <strong>Your Order Number:</strong><br>
+                <h4 class="mb-0"><code class="text-primary">{{ order.order_number }}</code></h4>
+                <small class="text-muted">Save this to track your order</small>
+            </div>
+
+            <div class="row g-3 mt-3 text-start">
+                <div class="col-md-6">
+                    <div class="p-3 bg-light-warm rounded">
+                        <small class="text-muted">Item</small>
+                        <div class="fw-bold">{{ order.item_description }}</div>
+                        <small>{{ order.item_type }} × {{ order.quantity }}</small>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="p-3 bg-light-warm rounded">
+                        <small class="text-muted">Contact</small>
+                        <div class="fw-bold">{{ order.customer_phone }}</div>
+                        <small>{{ order.customer_location }}</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert-warning mt-3">
+                <i class="bi bi-clock-fill"></i>
+                <div>Our team will contact you within <strong>24 hours</strong> to confirm details.</div>
+            </div>
+
+            <div class="d-flex flex-wrap gap-2 justify-content-center mt-3">
+                <a href="{{ url_for('shop.track_order', order_number=order.order_number) }}" class="btn btn-info">
+                    <i class="bi bi-search"></i> Track My Order
+                </a>
+                <a href="{{ url_for('shop.home') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-house-fill"></i> Back to Shop
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

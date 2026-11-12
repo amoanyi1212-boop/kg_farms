@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Poultry Inventory - K&G Farms{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="fw-bold text-success"><i class="bi bi-egg-fried"></i> Poultry Inventory</h3>
+    <a href="{{ url_for('inventory.add_poultry') }}" class="btn btn-success"><i class="bi bi-plus-circle"></i> Add Poultry</a>
+</div>
+<div class="row g-2 mb-3">
+    <div class="col-md-4"><div class="card bg-success text-white text-center p-2"><h5>{{ total_birds }}</h5><small>Total Birds</small></div></div>
+    <div class="col-md-4"><div class="card bg-info text-white text-center p-2"><h5>{{ birds|length }}</h5><small>Batches</small></div></div>
+    <div class="col-md-4"><div class="card bg-warning text-dark text-center p-2"><h5>GH₵ {{ "{:,.0f}".format(total_value) }}</h5><small>Total Value</small></div></div>
+</div>
+<form class="row g-2 mb-3" method="GET">
+    <div class="col-md-3"><select name="type" class="form-select"><option value="">All Types</option>{% for t in bird_types %}<option value="{{ t }}" {% if filter_type==t %}selected{% endif %}>{{ t }}</option>{% endfor %}</select></div>
+    <div class="col-md-3"><select name="status" class="form-select"><option value="">All Status</option>{% for s in stock_statuses %}<option value="{{ s }}" {% if filter_status==s %}selected{% endif %}>{{ s }}</option>{% endfor %}</select></div>
+    <div class="col-md-2"><button class="btn btn-outline-success w-100">Filter</button></div>
+</form>
+<div class="card shadow-sm"><div class="table-responsive"><table class="table table-hover mb-0">
+<thead class="table-success"><tr><th>Batch</th><th>Type</th><th>Breed</th><th>Qty</th><th>Age</th><th>Weight</th><th>Price</th><th>Housing</th><th>Status</th><th>Actions</th></tr></thead>
+<tbody>{% for b in birds %}<tr>
+    <td class="fw-bold">{{ b.batch_name }}</td><td>{{ b.bird_type }}</td><td>{{ b.breed or '-' }}</td>
+    <td>{{ b.quantity }}</td><td>{{ b.age_weeks }}w</td><td>{{ b.avg_weight_kg or '-' }} kg</td>
+    <td>GH₵ {{ "{:,.0f}".format(b.unit_price or 0) }}</td><td>{{ b.housing or '-' }}</td>
+    <td><span class="badge bg-{{ 'success' if b.status=='Available' else 'secondary' if b.status=='Sold' else 'danger' }}">{{ b.status }}</span></td>
+    <td><a href="{{ url_for('inventory.edit_poultry', id=b.id) }}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+    {% if current_user.is_admin() %}<form method="POST" action="{{ url_for('inventory.delete_poultry', id=b.id) }}" class="d-inline" onsubmit="return confirm('Delete?')"><button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></form>{% endif %}</td>
+</tr>{% else %}<tr><td colspan="10" class="text-center text-muted py-4">No poultry records found</td></tr>{% endfor %}</tbody>
+</table></div></div>
+{% endblock %}

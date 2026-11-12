@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Summary Report - K&G Farms{% endblock %}
+{% block content %}
+<h3 class="fw-bold text-success mb-3"><i class="bi bi-pie-chart"></i> Farm Summary</h3>
+<div class="row g-3 mb-3">
+    <div class="col-md-3"><div class="card bg-success text-white text-center p-3"><h6>All-Time Revenue</h6><h3>GH₵ {{ "{:,.0f}".format(total_revenue) }}</h3></div></div>
+    <div class="col-md-3"><div class="card bg-danger text-white text-center p-3"><h6>All-Time Expenses</h6><h3>GH₵ {{ "{:,.0f}".format(total_expenses) }}</h3></div></div>
+    <div class="col-md-3"><div class="card bg-primary text-white text-center p-3"><h6>Net Profit</h6><h3>GH₵ {{ "{:,.0f}".format(total_profit) }}</h3></div></div>
+    <div class="col-md-3"><div class="card bg-info text-white text-center p-3"><h6>Total Deaths</h6><h3>{{ total_deaths }}</h3></div></div>
+</div>
+<div class="row g-3 mb-3">
+    <div class="col-md-4"><div class="card text-center p-3 shadow-sm"><h6>Total Poultry</h6><h2 class="text-success">{{ total_birds }}</h2></div></div>
+    <div class="col-md-4"><div class="card text-center p-3 shadow-sm"><h6>Total Livestock</h6><h2 class="text-info">{{ total_animals }}</h2></div></div>
+    <div class="col-md-4"><div class="card text-center p-3 shadow-sm"><h6>Month Profit</h6><h2 class="{{ 'text-success' if month_profit >= 0 else 'text-danger' }}">GH₵ {{ "{:,.0f}".format(month_profit) }}</h2></div></div>
+</div>
+{% endblock %}

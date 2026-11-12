@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="theme-color" content="#1E3A5F">
+    <meta name="description" content="K&G Farms - Ghana's trusted poultry and livestock supplier">
+    <title>{% block title %}K&G Farms{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐔</text></svg>">
+</head>
+<body>
+
+{% if current_user.is_authenticated %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-farm sticky-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url_for('dashboard.index') }}">
+            <i class="bi bi-buildings-fill"></i> K&G Farms
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navMain">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('dashboard.index') }}">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="bi bi-box-seam-fill"></i> Inventory
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ url_for('inventory.poultry') }}"><i class="bi bi-egg-fried"></i> Poultry</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('inventory.livestock') }}"><i class="bi bi-heart-pulse-fill"></i> Livestock</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('eggs.inventory') }}"><i class="bi bi-egg-fill"></i> Eggs</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{{ url_for('eggs.daily_collection') }}"><i class="bi bi-basket-fill"></i> Daily Egg Collection</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('inventory.mortality') }}"><i class="bi bi-x-octagon-fill"></i> Mortality Log</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="bi bi-cart-check-fill"></i> Sales
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ url_for('sales.daily_sales') }}"><i class="bi bi-calendar-day"></i> Today's Sales</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('sales.add_sale') }}"><i class="bi bi-plus-circle-fill"></i> New Sale</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('sales.sales_history') }}"><i class="bi bi-clock-history"></i> Sales History</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{{ url_for('sales.expenses') }}"><i class="bi bi-receipt"></i> Expenses</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="bi bi-basket-fill"></i> Feed
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ url_for('feed.feed_inventory') }}"><i class="bi bi-box-fill"></i> Feed Stock</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('feed.add_feed') }}"><i class="bi bi-plus-circle-fill"></i> Add Feed</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('feed.feed_log') }}"><i class="bi bi-journal-text"></i> Feed Log</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('feed.feed_schedule') }}"><i class="bi bi-calendar-week-fill"></i> Schedule</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="bi bi-bar-chart-line-fill"></i> Reports
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ url_for('reports.summary') }}"><i class="bi bi-pie-chart-fill"></i> Summary</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('reports.daily_report') }}"><i class="bi bi-calendar-day-fill"></i> Daily Report</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('reports.monthly_report') }}"><i class="bi bi-calendar-month-fill"></i> Monthly Report</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('shop.manage_orders') }}">
+                        <i class="bi bi-bag-check-fill"></i> Orders
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('shop.home') }}" target="_blank">
+                        <i class="bi bi-shop-window"></i> View Shop
+                    </a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                {% if current_user.is_admin() %}
+                <li class="nav-item">
+                    <a class="nav-link text-warning" href="{{ url_for('auth.manage_users') }}">
+                        <i class="bi bi-people-fill"></i> Users
+                    </a>
+                </li>
+                {% endif %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle"></i> {{ current_user.full_name.split()[0] }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><span class="dropdown-item-text text-muted small">
+                            <i class="bi bi-shield-check"></i> {{ current_user.role|capitalize }}</span></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{{ url_for('auth.change_password') }}"><i class="bi bi-key-fill"></i> Change Password</a></li>
+                        <li><a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endif %}
+
+<div class="container-fluid mt-2">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {% if category == 'success' %}<i class="bi bi-check-circle-fill"></i>
+            {% elif category == 'danger' %}<i class="bi bi-exclamation-triangle-fill"></i>
+            {% elif category == 'warning' %}<i class="bi bi-exclamation-circle-fill"></i>
+            {% elif category == 'info' %}<i class="bi bi-info-circle-fill"></i>
+            {% endif %}
+            <div>{{ message }}</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+</div>
+
+<main class="container-fluid py-2">
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="bg-farm text-white text-center py-3 mt-4">
+    <small><i class="bi bi-buildings-fill"></i> &copy; 2026 K&G Farms, Ghana. All rights reserved. | Poultry & Livestock Management</small>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

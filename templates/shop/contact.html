@@ -1,0 +1,66 @@
+{% extends "shop/base_shop.html" %}
+{% block title %}Contact Us - K&G Farms{% endblock %}
+{% block content %}
+<div class="shop-hero">
+    <h1><i class="bi bi-telephone-fill"></i> Contact Us</h1>
+    <p>Get in touch — we are ready to assist you!</p>
+</div>
+
+<div class="row g-4 justify-content-center">
+    <!-- Call Card -->
+    <div class="col-md-4">
+        <div class="card shadow-sm text-center p-4 h-100 border-primary">
+            <i class="bi bi-telephone-fill" style="font-size:3rem; color:var(--primary);"></i>
+            <h5 class="fw-bold mt-2">Call Us</h5>
+            <p class="mb-2"><a href="tel:0548125064" class="fw-bold fs-5 text-primary">054 812 5064</a></p>
+            <small class="text-muted">Mon - Sat: 7am - 6pm</small>
+        </div>
+    </div>
+    
+    <!-- WhatsApp Card -->
+    <div class="col-md-4">
+        <div class="card shadow-sm text-center p-4 h-100" style="border-left: 4px solid #25D366 !important;">
+            <i class="bi bi-whatsapp" style="font-size:3rem; color:#25D366;"></i>
+            <h5 class="fw-bold mt-2">WhatsApp Us</h5>
+            <p class="mb-2"><a href="https://wa.me/233548125064" target="_blank" class="fw-bold fs-5" style="color:#25D366;">054 812 5064</a></p>
+            <small class="text-muted">Tap to Chat Instantly</small>
+        </div>
+    </div>
+    
+    <!-- Email Card -->
+    <div class="col-md-4">
+        <div class="card shadow-sm text-center p-4 h-100 border-warning">
+            <i class="bi bi-envelope-fill" style="font-size:3rem; color:var(--gold-dark);"></i>
+            <h5 class="fw-bold mt-2">Email Us</h5>
+            <p class="mb-2"><a href="mailto:kgfarms.business@gmail.com" class="fw-bold" style="color:var(--gold-dark); word-break: break-all;">kgfarms.business@gmail.com</a></p>
+            <small class="text-muted">We reply within 24 hours</small>
+        </div>
+    </div>
+    
+    <!-- Address Card -->
+    <div class="col-md-8">
+        <div class="card shadow-sm text-center p-4 border-dark">
+            <i class="bi bi-geo-alt-fill" style="font-size:3rem; color:var(--danger);"></i>
+            <h5 class="fw-bold mt-2">Visit Our Farm</h5>
+            <p class="text-muted mb-1 fw-semibold">Ghana, West Africa</p>
+            <small class="text-muted">Kindly contact us before visiting so we can schedule your tour.</small>
+        </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="col-lg-8">
+        <div class="card shadow bg-light-warm text-center p-4">
+            <h4 class="fw-bold">Ready to Order?</h4>
+            <p class="text-muted">Skip the phone calls and place your order directly online!</p>
+            <div class="d-flex flex-wrap gap-2 justify-content-center">
+                <a href="{{ url_for('shop.place_order') }}" class="btn btn-warning">
+                    <i class="bi bi-cart-plus-fill"></i> Place Order Online
+                </a>
+                <a href="{{ url_for('shop.home') }}" class="btn btn-outline-info">
+                    <i class="bi bi-shop-window"></i> Browse Products
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

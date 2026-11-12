@@ -1,0 +1,91 @@
+{% extends "shop/base_shop.html" %}
+{% block title %}Fresh Eggs - K&G Farms{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <div>
+        <h3 class="fw-bold mb-1"><i class="bi bi-egg-fill"></i> Fresh Farm Eggs</h3>
+        <small class="text-muted">{{ eggs|length }} product(s) available — Farm fresh, collected daily!</small>
+    </div>
+    <a href="{{ url_for('shop.place_order') }}" class="btn btn-warning">
+        <i class="bi bi-cart-plus-fill"></i> Place Order
+    </a>
+</div>
+
+{% if eggs %}
+<div class="row g-3">
+    {% for e in eggs %}
+    <div class="col-6 col-md-4 col-lg-3">
+        <div class="product-card">
+            <div class="product-image" style="background: linear-gradient(135deg, #FFF8E1, #FFE0B2);">
+                🥚
+            </div>
+            <div class="product-body">
+                <div class="product-title">{{ e.egg_type }}</div>
+                <small class="text-muted d-block">
+                    {% if e.egg_size %}{{ e.egg_size }}{% endif %}
+                    {% if e.egg_color %} · {{ e.egg_color }}{% endif %}
+                </small>
+
+                {% if e.grade %}
+                <span class="badge bg-warning mt-1 mb-1">{{ e.grade }}</span>
+                {% endif %}
+
+                <div class="product-price">
+                    GH₵ {{ "{:,.0f}".format(e.price_per_crate or 0) }}
+                    <small class="text-muted fw-normal" style="font-size:0.7rem;">/crate</small>
+                </div>
+
+                {% if e.price_per_egg %}
+                <small class="text-muted d-block mb-2">
+                    or GH₵ {{ "{:,.2f}".format(e.price_per_egg) }} per egg
+                </small>
+                {% endif %}
+
+                <div class="product-meta">
+                    <span><i class="bi bi-box-fill"></i> {{ e.crates_in_stock }} crates</span>
+                    <span><i class="bi bi-hash"></i> {{ e.total_eggs }} eggs</span>
+                </div>
+
+                <div class="small text-muted mb-2">
+                    {% if e.collection_date %}
+                    <i class="bi bi-calendar-check text-success"></i> Collected: {{ e.collection_date.strftime('%b %d') }}
+                    {% endif %}
+                </div>
+
+                <a href="{{ url_for('shop.place_order') }}" class="btn btn-warning btn-sm w-100">
+                    <i class="bi bi-cart-plus"></i> Order Now
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Bulk order CTA -->
+<div class="card shadow-sm bg-light-warm text-center p-4 mt-4">
+    <h5 class="fw-bold"><i class="bi bi-truck"></i> Need Eggs in Bulk?</h5>
+    <p class="text-muted mb-2">We supply restaurants, hotels, bakeries and households across Ghana.</p>
+    <div class="d-flex flex-wrap gap-2 justify-content-center">
+        <a href="{{ url_for('shop.place_order') }}" class="btn btn-warning">
+            <i class="bi bi-cart-plus-fill"></i> Place Bulk Order
+        </a>
+        <a href="https://wa.me/233548125064?text=Hi%20K%26G%20Farms%2C%20I%20need%20eggs%20in%20bulk" target="_blank" class="btn btn-outline-success" style="border-color:#25D366; color:#25D366;">
+            <i class="bi bi-whatsapp"></i> WhatsApp Us
+        </a>
+    </div>
+</div>
+
+{% else %}
+<div class="card text-center p-5">
+    <i class="bi bi-egg" style="font-size:4rem; color:var(--text-muted);"></i>
+    <h5 class="mt-3">No eggs available right now</h5>
+    <p class="text-muted">Our layers are resting! Check back soon or contact us to pre-order.</p>
+    <div class="d-flex flex-wrap gap-2 justify-content-center">
+        <a href="{{ url_for('shop.contact') }}" class="btn btn-info">Contact Us</a>
+        <a href="https://wa.me/233548125064?text=Hi%2C%20when%20will%20eggs%20be%20available%3F" target="_blank" class="btn btn-outline-success" style="border-color:#25D366; color:#25D366;">
+            <i class="bi bi-whatsapp"></i> Ask on WhatsApp
+        </a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

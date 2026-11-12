@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Mortality Log - K&G Farms{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="fw-bold text-danger"><i class="bi bi-x-octagon"></i> Mortality Log</h3>
+    <a href="{{ url_for('inventory.add_mortality') }}" class="btn btn-danger"><i class="bi bi-plus-circle"></i> Log Death</a>
+</div>
+<div class="card bg-danger text-white text-center p-2 mb-3"><h4>{{ total_deaths }}</h4><small>Total Deaths Recorded</small></div>
+<div class="card shadow-sm"><div class="table-responsive"><table class="table table-hover mb-0">
+<thead class="table-danger"><tr><th>Date</th><th>Category</th><th>Type</th><th>Batch/Tag</th><th>Qty Dead</th><th>Cause</th><th>Reported By</th></tr></thead>
+<tbody>{% for m in logs %}<tr>
+    <td>{{ m.date_of_death }}</td><td>{{ m.animal_category }}</td><td>{{ m.animal_type }}</td>
+    <td>{{ m.batch_or_tag or '-' }}</td><td class="fw-bold text-danger">{{ m.quantity_dead }}</td>
+    <td>{{ m.suspected_cause or 'Unknown' }}</td><td>{{ m.reporter.full_name if m.reporter else '-' }}</td>
+</tr>{% else %}<tr><td colspan="7" class="text-center text-muted py-4">No mortality records</td></tr>{% endfor %}</tbody>
+</table></div></div>
+{% endblock %}

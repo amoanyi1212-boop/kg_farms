@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block title %}Add Eggs - K&G Farms{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow">
+            <div class="card-header bg-warning text-white">
+                <h4 class="mb-0"><i class="bi bi-egg-fill"></i> Add Eggs to Inventory</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <h6 class="text-muted mb-3"><i class="bi bi-info-circle"></i> Egg Details</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">Egg Type *</label>
+                            <select name="egg_type" class="form-select" required>
+                                {% for t in egg_types %}<option>{{ t }}</option>{% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Size</label>
+                            <select name="egg_size" class="form-select">
+                                <option value="">-- Select --</option>
+                                {% for s in sizes %}<option {% if s == 'Medium' %}selected{% endif %}>{{ s }}</option>{% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Color</label>
+                            <select name="egg_color" class="form-select">
+                                {% for c in colors %}<option>{{ c }}</option>{% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Grade</label>
+                            <select name="grade" class="form-select">
+                                {% for g in grades %}<option>{{ g }}</option>{% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Source Batch</label>
+                            <input type="text" name="source_batch" class="form-control" placeholder="e.g., Layer Batch A">
+                        </div>
+                    </div>
+
+                    <h6 class="text-muted mb-3"><i class="bi bi-box-fill"></i> Quantity</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">Crates in Stock * (1 crate = 30 eggs)</label>
+                            <input type="number" name="crates_in_stock" class="form-control" required min="0" value="0">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Loose Eggs (not in crates)</label>
+                            <input type="number" name="loose_eggs" class="form-control" min="0" value="0">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Reorder Level (crates)</label>
+                            <input type="number" name="reorder_level" class="form-control" min="0" value="10">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Status</label>
+                            <select name="status" class="form-select">
+                                {% for s in statuses %}<option>{{ s }}</option>{% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <h6 class="text-muted mb-3"><i class="bi bi-cash-coin"></i> Pricing (GH₵)</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">Price per Crate</label>
+                            <input type="number" name="price_per_crate" class="form-control" step="0.01" placeholder="e.g., 45.00">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Price per Single Egg</label>
+                            <input type="number" name="price_per_egg" class="form-control" step="0.01" placeholder="e.g., 1.50">
+                        </div>
+                    </div>
+
+                    <h6 class="text-muted mb-3"><i class="bi bi-calendar"></i> Dates & Storage</h6>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Collection Date</label>
+                            <input type="date" name="collection_date" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Expiry Date</label>
+                            <input type="date" name="expiry_date" class="form-control">
+                            <small class="text-muted">Auto-set to 28 days if empty</small>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Storage Location</label>
+                            <input type="text" name="storage_location" class="form-control" placeholder="e.g., Cold Room A, Shelf 3">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Notes</label>
+                            <textarea name="notes" class="form-control" rows="2"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="mt-3 d-flex gap-2 flex-wrap">
+                        <button type="submit" class="btn btn-warning btn-lg"><i class="bi bi-check-circle"></i> Save Eggs</button>
+                        <a href="{{ url_for('eggs.inventory') }}" class="btn btn-outline-secondary btn-lg">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

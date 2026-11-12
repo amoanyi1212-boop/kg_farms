@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Add Expense - K&G Farms{% endblock %}
+{% block content %}
+<div class="row justify-content-center"><div class="col-md-6">
+<div class="card shadow border-danger"><div class="card-header bg-danger text-white"><h4 class="mb-0"><i class="bi bi-receipt"></i> Add Expense</h4></div>
+<div class="card-body"><form method="POST"><div class="row g-3">
+    <div class="col-md-6"><label class="form-label">Category *</label><select name="category" class="form-select" required><option>Feed</option><option>Veterinary</option><option>Labor</option><option>Transport</option><option>Equipment</option><option>Utilities</option><option>Medication</option><option>Other</option></select></div>
+    <div class="col-md-6"><label class="form-label">Amount *</label><input type="number" name="amount" class="form-control" required step="0.01"></div>
+    <div class="col-12"><label class="form-label">Description *</label><input type="text" name="description" class="form-control" required></div>
+    <div class="col-md-6"><label class="form-label">Payment Method</label><select name="payment_method" class="form-select"><option>Cash</option><option>Transfer</option><option>POS</option></select></div>
+    <div class="col-md-6"><label class="form-label">Date</label><input type="date" name="expense_date" class="form-control"></div>
+    <div class="col-12"><label class="form-label">Notes</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+</div><button type="submit" class="btn btn-danger w-100 mt-3"><i class="bi bi-check-circle"></i> Save Expense</button></form></div></div>
+</div></div>
+{% endblock %}

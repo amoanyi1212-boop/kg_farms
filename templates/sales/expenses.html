@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Expenses - K&G Farms{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="fw-bold text-danger"><i class="bi bi-receipt"></i> Expenses</h3>
+    <a href="{{ url_for('sales.add_expense') }}" class="btn btn-danger"><i class="bi bi-plus-circle"></i> Add Expense</a>
+</div>
+<div class="card bg-danger text-white text-center p-2 mb-3"><h4>GH₵ {{ "{:,.0f}".format(total) }}</h4><small>Total Expenses</small></div>
+<div class="card shadow-sm"><div class="table-responsive"><table class="table table-hover mb-0">
+<thead class="table-danger"><tr><th>Date</th><th>Category</th><th>Description</th><th>Amount</th><th>Method</th><th>Recorded By</th></tr></thead>
+<tbody>{% for e in expenses %}<tr>
+    <td>{{ e.expense_date }}</td><td><span class="badge bg-secondary">{{ e.category }}</span></td>
+    <td>{{ e.description }}</td><td class="fw-bold text-danger">GH₵ {{ "{:,.0f}".format(e.amount) }}</td>
+    <td>{{ e.payment_method }}</td><td>{{ e.recorder.full_name if e.recorder else '-' }}</td>
+</tr>{% else %}<tr><td colspan="6" class="text-center text-muted py-3">No expenses</td></tr>{% endfor %}</tbody>
+</table></div></div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Feed Inventory - K&G Farms{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="fw-bold text-warning"><i class="bi bi-basket"></i> Feed Inventory</h3>
+    <a href="{{ url_for('feed.add_feed') }}" class="btn btn-warning text-dark"><i class="bi bi-plus-circle"></i> Add Feed</a>
+</div>
+<div class="row g-2 mb-3">
+    <div class="col-md-4"><div class="card bg-warning text-dark text-center p-2"><h4>{{ feeds|length }}</h4><small>Feed Items</small></div></div>
+    <div class="col-md-4"><div class="card bg-success text-white text-center p-2"><h4>GH₵ {{ "{:,.0f}".format(total_value) }}</h4><small>Total Feed Value</small></div></div>
+    <div class="col-md-4"><div class="card bg-danger text-white text-center p-2"><h4>{{ low_stock|length }}</h4><small>Low Stock Alerts</small></div></div>
+</div>
+{% if low_stock %}<div class="alert alert-danger"><i class="bi bi-exclamation-triangle"></i> <strong>Low Stock:</strong> {% for f in low_stock %}{{ f.feed_name }} ({{ f.quantity_in_stock }} {{ f.unit }}){% if not loop.last %}, {% endif %}{% endfor %}</div>{% endif %}
+<div class="card shadow-sm"><div class="table-responsive"><table class="table table-hover mb-0">
+<thead class="table-warning"><tr><th>Feed Name</th><th>Category</th><th>In Stock</th><th>Unit</th><th>Cost</th><th>Value</th><th>Reorder</th><th>Expiry</th><th>Location</th><th>Actions</th></tr></thead>
+<tbody>{% for f in feeds %}<tr class="{{ 'table-danger' if f.is_low_stock else '' }}">
+    <td class="fw-bold">{{ f.feed_name }}</td><td>{{ f.feed_category or '-' }}</td>
+    <td class="{{ 'text-danger fw-bold' if f.is_low_stock else '' }}">{{ f.quantity_in_stock }}</td>
+    <td>{{ f.unit }}</td><td>GH₵ {{ "{:,.0f}".format(f.unit_cost or 0) }}</td>
+    <td>GH₵ {{ "{:,.0f}".format(f.total_value) }}</td><td>{{ f.reorder_level }}</td>
+    <td>{{ f.expiry_date or '-' }}</td><td>{{ f.storage_location or '-' }}</td>
+    <td><a href="{{ url_for('feed.edit_feed', id=f.id) }}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+    {% if current_user.is_admin() %}<form method="POST" action="{{ url_for('feed.delete_feed', id=f.id) }}" class="d-inline" onsubmit="return confirm('Delete?')"><button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></form>{% endif %}</td>
+</tr>{% else %}<tr><td colspan="10" class="text-center text-muted py-4">No feed in inventory</td></tr>{% endfor %}</tbody>
+</table></div></div>
+{% endblock %}

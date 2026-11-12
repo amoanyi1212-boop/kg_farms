@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Feed Log - K&G Farms{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="fw-bold text-primary"><i class="bi bi-journal-text"></i> Feed Consumption Log</h3>
+    <a href="{{ url_for('feed.add_feed_log') }}" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Log Feeding</a>
+</div>
+<div class="card bg-primary text-white text-center p-2 mb-3"><h4>{{ today_total }} kg</h4><small>Total Fed Today</small></div>
+<div class="card shadow-sm"><div class="table-responsive"><table class="table table-sm table-hover mb-0">
+<thead class="table-primary"><tr><th>Date</th><th>Feed</th><th>Group</th><th>Animal</th><th>Qty</th><th>Time</th><th>Fed By</th></tr></thead>
+<tbody>{% for l in logs %}<tr>
+    <td>{{ l.date_given }}</td><td>{{ l.feed.feed_name }}</td><td>{{ l.target_group }}</td>
+    <td>{{ l.animal_type }}</td><td class="fw-bold">{{ l.quantity_given }} {{ l.unit }}</td>
+    <td>{{ l.feeding_time or '-' }}</td><td>{{ l.feeder.full_name if l.feeder else '-' }}</td>
+</tr>{% else %}<tr><td colspan="7" class="text-center text-muted py-3">No feed logs</td></tr>{% endfor %}</tbody>
+</table></div></div>
+{% endblock %}
