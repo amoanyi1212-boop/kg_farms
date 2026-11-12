@@ -48,6 +48,33 @@
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+
+/* ===== FORCE DARK NAVBAR (do not remove) ===== */
+nav.navbar.bg-farm,
+nav.navbar.navbar-dark.bg-farm,
+.navbar.bg-farm {
+    background: linear-gradient(135deg, #0F2340 0%, #1E3A5F 60%, #2C5282 100%) !important;
+    background-color: #1E3A5F !important;
+    box-shadow: 0 4px 20px rgba(15,35,64,0.35) !important;
+}
+.navbar.bg-farm .nav-link,
+.navbar.bg-farm .navbar-brand {
+    color: #ffffff !important;
+}
+.navbar.bg-farm .nav-link:hover,
+.navbar.bg-farm .nav-link.active {
+    color: #ffffff !important;
+    background: rgba(255,255,255,0.15) !important;
+}
+.navbar.bg-farm .navbar-brand i {
+    color: #F2C94C !important;
+}
+footer.bg-farm {
+    background: linear-gradient(135deg, #0F2340 0%, #1E3A5F 100%) !important;
+    color: #fff !important;
+}
+/* ===== END FORCE DARK NAVBAR ===== */
+
 /* ---------- RESET ---------- */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { font-size: 16px; -webkit-text-size-adjust: 100%; }

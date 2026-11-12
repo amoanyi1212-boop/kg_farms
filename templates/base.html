@@ -8,13 +8,13 @@
     <title>{% block title %}K&G Farms{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}?v=20261112" rel="stylesheet">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐔</text></svg>">
 </head>
 <body>
 
 {% if current_user.is_authenticated %}
-<nav class="navbar navbar-expand-lg navbar-dark bg-farm sticky-top">
+<nav class="navbar navbar-expand-lg navbar-dark bg-farm sticky-top" data-bs-theme="dark" style="background: linear-gradient(135deg, #0F2340 0%, #1E3A5F 60%, #2C5282 100%) !important;">
     <div class="container-fluid">
         <a class="navbar-brand" href="{{ url_for('dashboard.index') }}">
             <i class="bi bi-buildings-fill"></i> K&G Farms
